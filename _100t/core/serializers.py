@@ -2,23 +2,37 @@ from rest_framework import serializers
 from models import Item, Category, List
 from django.contrib.auth.models import User
 
-class ItemSerializer(serializers.HyperlinkedModelSerializer):
+class EnlistSerializer(serializers.Serializer):
+    pk = serializers.Field()
+    item_list = serializers.Field()
+    item = serializers.Field()
+
+class ItemHyperlinkedModelSerializer(serializers.HyperlinkedModelSerializer):
     class Meta:
         model = Item
-        fields = ('short_name', 'description', 'is_set', 'sub_index')
+        fields = ('id', 'short_name', 'description', 'is_set', 'sub_index')
+
+class ItemSerializer(serializers.Serializer):
+    pk = serializers.Field()
 
 class CategorySerializer(serializers.HyperlinkedModelSerializer):
     class Meta:
         model = Category
-        fileds = ('name', 'owner')
+        fileds = ('id', 'name', 'owner')
 
-class ItemListSerializer(serializers.HyperlinkedModelSerializer):
+class ItemListHyperlinkedModelSerializer(serializers.HyperlinkedModelSerializer):
     class Meta:
         model = List
-        fields = ('name', 'owner')
+        fields = ('id', 'title', 'owner', 'items')
+
+class ItemListSerializer(serializers.Serializer):
+    pk = serializers.Field()
+    title = serializers.CharField(max_length=50)
+    owner = serializers.Field()
+    created = serializers.Field()
 
 class UserSerializer(serializers.HyperlinkedModelSerializer):
     class Meta:
         model = User
-        fields = ('username', )
+        fields = ('id', 'username', )
 

@@ -1,7 +1,9 @@
 from rest_framework import viewsets
-from django.contrib.auth.models import User
-from models import Item, Category, List
-from serializers import ItemSerializer, CategorySerializer, ItemListSerializer, UserSerializer
+from rest_framework import status
+from rest_framework.decorators import api_view
+from rest_framework.response import Response
+from models import Item, Category, List, Enlist
+from serializers import ItemSerializer, CategorySerializer, ItemListSerializer, UserSerializer, EnlistSerializer
 
 class ItemViewSet(viewsets.ModelViewSet):
     """
@@ -24,7 +26,23 @@ class ItemListViewSet(viewsets.ModelViewSet):
     queryset = List.objects.all()
     serializer_class = ItemListSerializer
 
-class UserViewSet(viewsets.ModelViewSet):
-    queryset = User.objects.all()
-    serializer_class = UserSerializer
+class EnlistViewSet(viewsets.ModelViewSet):
+    queryset = Enlist.objects.all()
+    serializer_class = EnlistSerializer
 
+#class UserViewSet(viewsets.ModelViewSet):
+#    queryset = User.objects.all()
+#    serializer_class = UserSerializer
+
+
+@api_view(['GET', 'POST'])
+def itemlist_list(request, format=None):
+    if request.method == 'GET':
+        lists = List.objects.all()
+        serializer = ItemListSerializer(lists, many=True)
+        return Response(serializer.data)
+    return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
+@api_view(['GET', 'PUT', 'DELETE'])
+def itemlist_detail(request, pk, format=None):
+    return Response(status=status.HTTP_204_NO_CONTENT)

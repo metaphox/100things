@@ -16,13 +16,14 @@ class List(models.Model):
     title = models.CharField(max_length=256)
     owner = models.ForeignKey(User, verbose_name="List owner")
     created = models.DateTimeField(auto_now_add=True)
+    items = models.ManyToManyField('Item', through="Enlist")
 
     class Meta:
         unique_together = ('id', 'owner')
         ordering = ('created', )
 
     def __unicode__(self):
-        return self.name
+        return self.title
 
 class Item(models.Model):
     short_name = models.CharField(max_length=255)
@@ -31,18 +32,20 @@ class Item(models.Model):
     sub_index = models.PositiveIntegerField(default=0) #index in the sub-item list if this is a sub item
     own_date = models.DateField(blank=True, null=True)
     parent_item = models.ForeignKey("self", verbose_name="item's parent item", blank=True, null=True)
+    owner = models.ForeignKey(User, verbose_name="Item owner")
 
     def __unicode__(self):
         return self.short_name
 
-class ListItem(models.Model):
-    item_list = models.ForeignKey(List)
+class Enlist(models.Model):
     item = models.ForeignKey(Item)
-    item_category = models.ManyToManyField(Category)
+    item_list = models.ForeignKey(List)
+    item_categories = models.ManyToManyField(Category)
     item_index = models.PositiveIntegerField()
 
     def __unicode__(self):
-        return "%d - %d" % (item_list, item_index)
+        return "%s (%s)" % (self.item.short_name, self.item_list.title)
 
     class Meta:
         unique_together = ('item_list', 'item', 'item_index')
+
