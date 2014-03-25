@@ -5,7 +5,7 @@ from django.contrib.auth.models import User
 class ItemSerializer(serializers.HyperlinkedModelSerializer):
     class Meta:
         model = Item
-        fields = ('item_list', 'index', 'is_set', 'sub_index', 'short_name', 'description')
+        fields = ('short_name', 'description', 'is_set', 'sub_index')
 
 class CategorySerializer(serializers.HyperlinkedModelSerializer):
     class Meta:
